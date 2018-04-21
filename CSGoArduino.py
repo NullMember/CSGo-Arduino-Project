@@ -4,7 +4,7 @@ import time
 import json
 import serial
 
-arduino = serial.Serial('COM4', 115200) # New serial connection
+arduino = serial.Serial('COM4', 115200) # New serial connection. Change port to your Arduino's Port
 
 def sendBombStatus(bomb): # Send bomb status to arduino
 	if(bomb == 'defused'):
@@ -21,10 +21,10 @@ def sendHealthStatus(health): # Send health status to arduino
 	if health == 100:
 		arduino.write('h')
 		arduino.write(str(health))
-	if health < 100 and >= 10:
+	elif health < 100 and >= 10:
 		arduino.write('h0')
 		arduino.write(str(health))
-	if health < 10 and >= 0:
+	elif health < 10 and >= 0:
 		arduino.write('h00')
 		arduino.write(str(health))
 	
