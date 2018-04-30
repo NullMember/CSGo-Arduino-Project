@@ -21,7 +21,7 @@ def sendHealthStatus(health): # Send health status to arduino
 	if health == 100:
 		arduino.write('h')
 		arduino.write(str(health))
-	elif health < 100 and health >= 10:
+	elif health < 100 and health >= 10: #thanks to Bjorn Braucker
 		arduino.write('h0')
 		arduino.write(str(health))
 	elif health < 10 and health >= 0:
