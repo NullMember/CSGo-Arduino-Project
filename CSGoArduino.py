@@ -16,7 +16,6 @@ def sendBombStatus(bomb, ctrl): # Send bomb status to arduino
 	else:
 		arduino.write('bn')
 	if(ctrl == 0):
-		print('bomb while')
 		while(arduino.read(1) != 'b'):
 			sendBombStatus(bomb, 1)
 	return None
@@ -32,7 +31,6 @@ def sendHealthStatus(health, ctrl): # Send health status to arduino
 		arduino.write('h00')
 		arduino.write(str(health))
 	if(ctrl == 0):
-		print('health while')
 		while(arduino.read(1) != 'h'):
 			sendHealthStatus(health, 1)
 	return None
@@ -42,14 +40,12 @@ def sendAmmoStatus(ammo, ctrl): # Send ammo status to arduino
 		arduino.write('a')
 		arduino.write(str(ammo))
 		if(ctrl == 0):
-			print('ammo while')
 			while(arduino.read(1) != 'a'):
 				sendAmmoStatus(ammo, 1)
 	else:
 		arduino.write('a')
 		arduino.write(str(0))
 		if(ctrl == 0):
-			print('ammo while')
 			while(arduino.read(1) != 'a'):
 				sendAmmoStatus(ammo, 1)
 	return None
