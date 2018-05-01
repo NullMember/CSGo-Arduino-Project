@@ -6,7 +6,7 @@ Adafruit_NeoPixel neoPixel = Adafruit_NeoPixel(pixels, 6, NEO_GRB + NEO_KHZ800);
 
 char Buffer[3];
 uint8_t health, bombStatus, bombBegin, ammoBegin, ammoStatus;
-uint16_t bombBlinkLength;
+uint16_t bombBlinkLength = 1000;
 unsigned long bombPreviousLength, ammoBlinkLength;
 uint8_t hRed, hGreen, hBlue;
 uint8_t ledBrightness = 127;
@@ -170,6 +170,9 @@ void setup() {
   neoPixel.show();
   Serial.begin(115200);
   Serial.setTimeout(10);
+  Serial.write('h');
+  Serial.write('a');
+  Serial.write('b');
 }
 
 void loop() {
