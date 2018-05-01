@@ -15,15 +15,15 @@ void readSerialData(){
   Serial.readBytes(Buffer, 1);
   if(Buffer[0] == 'b'){
     readBombData();
-	  Serial.write('b');
+	Serial.write('b');
   }
   else if(Buffer[0] == 'h'){
     readHealthData();
-	  Serial.write('h');
+	Serial.write('h');
   }
   else if(Buffer[0] == 'a'){
     readAmmoData();
-	  Serial.write('a');
+	Serial.write('a');
   }
 }
 
