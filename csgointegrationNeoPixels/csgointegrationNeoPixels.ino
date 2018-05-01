@@ -12,22 +12,22 @@ uint8_t hRed, hGreen, hBlue;
 uint8_t ledBrightness = 127;
 
 void readSerialData(){
-  Buffer[0] = NULL;
-  Buffer[0] = Serial.read(); 
-  
+  Serial.readBytes(Buffer, 1);
   if(Buffer[0] == 'b'){
     readBombData();
+	  Serial.write('b');
   }
   else if(Buffer[0] == 'h'){
     readHealthData();
+	  Serial.write('h');
   }
   else if(Buffer[0] == 'a'){
     readAmmoData();
+	  Serial.write('a');
   }
 }
 
 uint8_t chartoInt(){
-  Buffer[0] = NULL; Buffer[1] = NULL; Buffer[2] = NULL;
   Serial.readBytes(Buffer, 3);
   Buffer[0] = (Buffer[0] - '0');
   Buffer[1] = (Buffer[1] - '0');
@@ -58,7 +58,7 @@ void driveHealth(){
 }
 
 void readBombData(){
-  Buffer[0] = Serial.read();
+  Serial.readBytes(Buffer, 1);
   if(Buffer[0] == 'p'){
     bombStatus = 1;
     bombBegin = 1;
@@ -117,7 +117,7 @@ void driveBomb(){
 }
 
 void readAmmoData(){
-  Buffer[0] = Serial.read();
+  Serial.readBytes(Buffer, 1);
   if((Buffer[0] - '0') == 0){
     ammoStatus = 0;
   }
