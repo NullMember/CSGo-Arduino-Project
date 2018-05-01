@@ -4,9 +4,9 @@ import time
 import json
 import serial
 
-arduino = serial.Serial('COM4', 115200) # New serial connection. Change port to your Arduino's Port
+arduino = serial.Serial('COM0', 115200) # New serial connection. Change port to your Arduino's Port
 
-def sendBombStatus(bomb): # Send bomb status to arduino
+def sendBombStatus(bomb, ctrl): # Send bomb status to arduino
 	if(bomb == 'defused'):
 		arduino.write('bd')
 	elif(bomb == 'planted'):
@@ -15,9 +15,13 @@ def sendBombStatus(bomb): # Send bomb status to arduino
 		arduino.write('be')
 	else:
 		arduino.write('bn')
+	if(ctrl == 0):
+		print('bomb while')
+		while(arduino.read(1) != 'b'):
+			sendBombStatus(bomb, 1)
 	return None
 	
-def sendHealthStatus(health): # Send health status to arduino
+def sendHealthStatus(health, ctrl): # Send health status to arduino
 	if health == 100:
 		arduino.write('h')
 		arduino.write(str(health))
@@ -27,10 +31,28 @@ def sendHealthStatus(health): # Send health status to arduino
 	elif health < 10 and health >= 0:
 		arduino.write('h00')
 		arduino.write(str(health))
+	if(ctrl == 0):
+		print('health while')
+		while(arduino.read(1) != 'h'):
+			sendHealthStatus(health, 1)
+	return None
 	
-def sendAmmoStatus(ammo): # Send ammo status to arduino
-	arduino.write('a')
-	arduino.write(str(ammo))
+def sendAmmoStatus(ammo, ctrl): # Send ammo status to arduino
+	if ammo != None:
+		arduino.write('a')
+		arduino.write(str(ammo))
+		if(ctrl == 0):
+			print('ammo while')
+			while(arduino.read(1) != 'a'):
+				sendAmmoStatus(ammo, 1)
+	else:
+		arduino.write('a')
+		arduino.write(str(0))
+		if(ctrl == 0):
+			print('ammo while')
+			while(arduino.read(1) != 'a'):
+				sendAmmoStatus(ammo, 1)
+	return None
 	
 class MyServer(HTTPServer):
 	def init_state(self):
@@ -54,23 +76,26 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 		self.end_headers()
 
 	def parse_payload(self, payload):
+		if arduino.in_waiting > 0:
+			fromArduino = arduino.read(arduino.in_waiting)
+			print(fromArduino)
 		player_health = self.get_player_health(payload)
 		bomb_state = self.get_bomb_state(payload)
 		ammo_status = self.get_ammo_status(payload)
 		
 		if bomb_state != self.server.bomb_state:
 			self.server.bomb_state = bomb_state
-			sendBombStatus(bomb_state)
+			sendBombStatus(bomb_state, 0)
 			print('Bomb state: %s' % bomb_state)
 		
 		if player_health != self.server.player_health:
 			self.server.player_health = player_health
-			sendHealthStatus(player_health)
+			sendHealthStatus(player_health, 0)
 			print('Player health: %s' % player_health)
 			
 		if ammo_status != self.server.ammo_status:
 			self.server.ammo_status = ammo_status
-			sendAmmoStatus(ammo_status)
+			sendAmmoStatus(ammo_status, 0)
 			print('Ammo status: %s' % ammo_status)
 			
 			
